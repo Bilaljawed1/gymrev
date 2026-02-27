@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schedule – Gym Evolution</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #e81010;
+    --blue: #1488fc;
+    --dark: #0a0a0a;
+    --dark2: #111111;
+    --dark3: #181818;
+    --white: #ffffff;
+    --gray: #888888;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 72px;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--red); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--blue); }
+  .btn-join {
+    background: var(--red);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 28px;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s;
+  }
+  .btn-join:hover { background: #c20d0d; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 75vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 80px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 75% 35%, rgba(20,136,252,0.09) 0%, transparent 55%),
+      radial-gradient(ellipse at 15% 75%, rgba(232,16,16,0.09) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .hero-bg-text {
+    position: absolute;
+    bottom: -60px;
+    right: -20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20vw;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.03);
+    text-transform: uppercase;
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 6px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+  .hero-title .line1 {
+    display: block;
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+  }
+  .hero-title .line2 {
+    display: block;
+    font-size: clamp(5rem, 13vw, 11rem);
+    color: transparent;
+    -webkit-text-stroke: 3px var(--blue);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.5s forwards;
+  }
+  .hero-sub {
+    max-width: 580px;
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: #ccc;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  /* ── WEEK NAV ── */
+  .week-nav {
+    padding: 48px 80px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .week-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .week-label span { color: var(--red); }
+
+  .week-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .week-arrow {
+    width: 40px; height: 40px;
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+    clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  }
+  .week-arrow:hover { background: var(--red); border-color: var(--red); }
+
+  .filter-wrap {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 8px 20px;
+    background: var(--dark3);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: var(--gray);
+    cursor: pointer;
+    clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { color: #fff; }
+  .filter-btn.active { background: var(--red); color: #fff; border-color: var(--red); }
+
+  /* ── SCHEDULE TABLE ── */
+  .schedule-section {
+    padding: 32px 80px 100px;
+    overflow-x: auto;
+  }
+
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+  }
+
+  /* Day headers */
+  .schedule-table thead tr th {
+    padding: 0;
+    width: calc(100% / 8);
+  }
+  .day-header {
+    background: var(--dark3);
+    padding: 20px 16px;
+    text-align: center;
+    border-right: 1px solid rgba(255,255,255,0.04);
+  }
+  .day-header.time-col {
+    background: var(--dark);
+    border-right: 2px solid rgba(255,255,255,0.08);
+  }
+  .day-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--white);
+  }
+  .day-date {
+    font-size: 0.72rem;
+    color: var(--gray);
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+  .day-header.today .day-name { color: var(--red); }
+  .day-header.today { border-bottom: 3px solid var(--red); }
+
+  /* Time rows */
+  .schedule-table tbody tr td {
+    border-right: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    vertical-align: top;
+    padding: 0;
+    min-height: 80px;
+  }
+  .time-cell {
+    padding: 14px 12px;
+    text-align: right;
+    border-right: 2px solid rgba(255,255,255,0.08) !important;
+    background: rgba(255,255,255,0.01);
+    white-space: nowrap;
+  }
+  .time-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    color: var(--gray);
+    text-transform: uppercase;
+  }
+  .class-cell {
+    padding: 6px;
+    min-height: 80px;
+  }
+
+  /* Class block */
+  .class-block {
+    border-radius: 0;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, filter 0.2s;
+  }
+  .class-block:hover { transform: scale(1.02); filter: brightness(1.15); }
+
+  .cb-strength { background: linear-gradient(135deg, rgba(232,16,16,0.25), rgba(150,8,8,0.4)); border-left: 3px solid var(--red); }
+  .cb-cardio   { background: linear-gradient(135deg, rgba(20,136,252,0.2), rgba(10,80,180,0.35)); border-left: 3px solid var(--blue); }
+  .cb-combat   { background: linear-gradient(135deg, rgba(200,50,0,0.25), rgba(120,30,0,0.4)); border-left: 3px solid #ff6a00; }
+  .cb-wellness { background: linear-gradient(135deg, rgba(80,20,140,0.25), rgba(50,10,100,0.4)); border-left: 3px solid #9b59b6; }
+  .cb-nutrition{ background: linear-gradient(135deg, rgba(0,160,80,0.2), rgba(0,100,50,0.35)); border-left: 3px solid #00c853; }
+
+  .cb-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .cb-meta {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.4;
+  }
+  .cb-spots {
+    position: absolute;
+    top: 6px; right: 6px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+  }
+  .cb-spots.full { color: rgba(232,16,16,0.7); }
+  .cb-full-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cb-full-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,100,100,0.9);
+    background: rgba(0,0,0,0.5);
+    padding: 2px 8px;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    padding: 0 80px 60px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .legend-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-right: 4px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #aaa;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  /* ── TODAY HIGHLIGHT ── */
+  .today-strip {
+    padding: 0 80px 60px;
+  }
+  .today-inner {
+    background: var(--dark2);
+    border-left: 4px solid var(--blue);
+    padding: 36px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .today-left .tl-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 8px;
+  }
+  .today-left h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.8rem;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .today-left p {
+    font-size: 0.9rem;
+    color: var(--gray);
+  }
+
+  .today-classes {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .today-class {
+    background: var(--dark3);
+    border-top: 3px solid var(--red);
+    padding: 16px 20px;
+    min-width: 140px;
+  }
+  .today-class:nth-child(even) { border-top-color: var(--blue); }
+  .tc-time {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gray);
+    margin-bottom: 6px;
+  }
+  .tc-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .tc-coach {
+    font-size: 0.75rem;
+    color: #666;
+  }
+
+  /* ── INFO CARDS ── */
+  .info-section {
+    padding: 0 80px 100px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+  .info-card {
+    background: var(--dark3);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .info-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--red);
+  }
+  .info-card:nth-child(2)::before { background: var(--blue); }
+  .info-card:nth-child(3)::before { background: linear-gradient(to right, var(--red), var(--blue)); }
+
+  .info-icon { font-size: 2.2rem; margin-bottom: 20px; display: block; }
+  .info-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .info-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #777;
+  }
+  .info-text b { color: var(--white); font-weight: 600; }
+
+  /* ── CTA ── */
+  .cta {
+    padding: 120px 80px;
+    background: var(--red);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 6%, 100% 0%, 100% 94%, 0% 100%);
+    margin: -30px 0;
+  }
+  .cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 1px, transparent 1px, transparent 20px);
+  }
+  .cta-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 20px;
+  }
+  .cta-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+  .cta-sub { font-size: 1rem; color: rgba(255,255,255,0.75); margin-bottom: 48px; }
+  .btn-white {
+    display: inline-block;
+    background: #fff;
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 56px;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: transform 0.2s;
+  }
+  .btn-white:hover { transform: scale(1.04); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #050505;
+    padding: 40px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .footer-logo { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: 1px; text-transform: uppercase; }
+  .footer-logo span { color: var(--red); }
+  .footer-copy { font-size: 0.8rem; color: var(--gray); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>GYM</span> EVOLUTION</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="why-gym-evolution.html">Why Us</a></li>
+    <li><a href="programs.html">Programs</a></li>
+    <li><a href="trainers.html">Trainers</a></li>
+    <li><a href="schedule.html">Schedule</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="about-us.html">About Us</a></li>
+  </ul>
+  <a href="pricing.html" class="btn-join">Join Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">Schedule</div>
+  <p class="hero-eyebrow">Plan Your Week · Book Your Class · Show Up</p>
+  <h1 class="hero-title">
+    <span class="line1">Class</span>
+    <span class="line2">SCHEDULE</span>
+  </h1>
+  <p class="hero-sub">50+ classes every week. From 5AM to 10PM, there's always a session waiting for you. Pick your class, book your spot, and let's get to work.</p>
+</section>
+
+<!-- WEEK NAV + FILTER -->
+<div class="week-nav reveal">
+  <div class="week-label">Week of <span id="week-display">Feb 17 – Feb 23, 2026</span></div>
+  <div class="week-controls">
+    <button class="week-arrow" onclick="changeWeek(-1)">&#8592;</button>
+    <button class="week-arrow" onclick="changeWeek(1)">&#8594;</button>
+  </div>
+  <div class="filter-wrap">
+    <button class="filter-btn active" onclick="filterClass('all', this)">All</button>
+    <button class="filter-btn" onclick="filterClass('strength', this)">Strength</button>
+    <button class="filter-btn" onclick="filterClass('cardio', this)">Cardio</button>
+    <button class="filter-btn" onclick="filterClass('combat', this)">Combat</button>
+    <button class="filter-btn" onclick="filterClass('wellness', this)">Wellness</button>
+  </div>
+</div>
+
+<!-- SCHEDULE TABLE -->
+<section class="schedule-section reveal">
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th><div class="day-header time-col"><div class="day-name">Time</div></div></th>
+        <th><div class="day-header today"><div class="day-name">Mon</div><div class="day-date">Feb 17</div></div></th>
+        <th><div class="day-header"><div class="day-name">Tue</div><div class="day-date">Feb 18</div></div></th>
+        <th><div class="day-header"><div class="day-name">Wed</div><div class="day-date">Feb 19</div></div></th>
+        <th><div class="day-header"><div class="day-name">Thu</div><div class="day-date">Feb 20</div></div></th>
+        <th><div class="day-header"><div class="day-name">Fri</div><div class="day-date">Feb 21</div></div></th>
+        <th><div class="day-header"><div class="day-name">Sat</div><div class="day-date">Feb 22</div></div></th>
+        <th><div class="day-header"><div class="day-name">Sun</div><div class="day-date">Feb 23</div></div></th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <!-- 5:00 AM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">5:00 AM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">8/12</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Derek S.</div>
+          </div>
+        </td>
+        <td class="class-cell"></td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">10/12</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Marcus B.</div>
+          </div>
+        </td>
+        <td class="class-cell"></td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">6/12</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Derek S.</div>
+          </div>
+        </td>
+        <td class="class-cell"></td>
+        <td class="class-cell"></td>
+      </tr>
+
+      <!-- 6:00 AM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">6:00 AM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">12/15</span>
+            <div class="cb-name">HIIT Ignite</div>
+            <div class="cb-meta">45 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">9/12</span>
+            <div class="cb-name">Body Sculpt</div>
+            <div class="cb-meta">55 min · Maria C.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots full">FULL</span>
+            <div class="cb-name">HIIT Ignite</div>
+            <div class="cb-meta">45 min · Nina P.</div>
+            <div class="cb-full-overlay"><span class="cb-full-text">Class Full</span></div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">7/12</span>
+            <div class="cb-name">Body Sculpt</div>
+            <div class="cb-meta">55 min · Maria C.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">11/15</span>
+            <div class="cb-name">HIIT Ignite</div>
+            <div class="cb-meta">45 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">8/15</span>
+            <div class="cb-name">Cardio Circuit</div>
+            <div class="cb-meta">50 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">14/20</span>
+            <div class="cb-name">Yoga Flow</div>
+            <div class="cb-meta">60 min · Aisha L.</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 7:00 AM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">7:00 AM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">16/20</span>
+            <div class="cb-name">Yoga Flow</div>
+            <div class="cb-meta">60 min · Aisha L.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">10/15</span>
+            <div class="cb-name">Cardio Circuit</div>
+            <div class="cb-meta">50 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">12/20</span>
+            <div class="cb-name">Yoga Flow</div>
+            <div class="cb-meta">60 min · Sara M.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">13/15</span>
+            <div class="cb-name">Cardio Circuit</div>
+            <div class="cb-meta">50 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">9/20</span>
+            <div class="cb-name">Pilates</div>
+            <div class="cb-meta">60 min · Sara M.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">11/12</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Derek S.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">7/15</span>
+            <div class="cb-name">HIIT Ignite</div>
+            <div class="cb-meta">45 min · Nina P.</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 9:00 AM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">9:00 AM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">8/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots full">FULL</span>
+            <div class="cb-name">Pilates</div>
+            <div class="cb-meta">60 min · Sara M.</div>
+            <div class="cb-full-overlay"><span class="cb-full-text">Class Full</span></div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">10/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">8/12</span>
+            <div class="cb-name">Body Sculpt</div>
+            <div class="cb-meta">55 min · Maria C.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">12/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">18/20</span>
+            <div class="cb-name">Yoga Flow</div>
+            <div class="cb-meta">60 min · Aisha L.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">6/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 12:00 PM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">12:00 PM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">9/15</span>
+            <div class="cb-name">Cardio Circuit</div>
+            <div class="cb-meta">50 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">7/12</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Marcus B.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">11/15</span>
+            <div class="cb-name">HIIT Ignite</div>
+            <div class="cb-meta">45 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">9/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">10/12</span>
+            <div class="cb-name">Body Sculpt</div>
+            <div class="cb-meta">55 min · Maria C.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots full">FULL</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+            <div class="cb-full-overlay"><span class="cb-full-text">Class Full</span></div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">15/20</span>
+            <div class="cb-name">Pilates</div>
+            <div class="cb-meta">60 min · Sara M.</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 5:00 PM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">5:00 PM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots full">FULL</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Derek S.</div>
+            <div class="cb-full-overlay"><span class="cb-full-text">Class Full</span></div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">13/15</span>
+            <div class="cb-name">HIIT Ignite</div>
+            <div class="cb-meta">45 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">8/12</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Marcus B.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">14/15</span>
+            <div class="cb-name">HIIT Ignite</div>
+            <div class="cb-meta">45 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots full">FULL</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Derek S.</div>
+            <div class="cb-full-overlay"><span class="cb-full-text">Class Full</span></div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">10/15</span>
+            <div class="cb-name">Cardio Circuit</div>
+            <div class="cb-meta">50 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell"></td>
+      </tr>
+
+      <!-- 6:30 PM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">6:30 PM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">11/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">17/20</span>
+            <div class="cb-name">Yoga Flow</div>
+            <div class="cb-meta">60 min · Aisha L.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">13/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">19/20</span>
+            <div class="cb-name">Pilates</div>
+            <div class="cb-meta">60 min · Sara M.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-combat" data-cat="combat">
+            <span class="cb-spots">8/15</span>
+            <div class="cb-name">Boxing Strike</div>
+            <div class="cb-meta">60 min · Tony V.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">9/12</span>
+            <div class="cb-name">Body Sculpt</div>
+            <div class="cb-meta">55 min · Maria C.</div>
+          </div>
+        </td>
+        <td class="class-cell"></td>
+      </tr>
+
+      <!-- 8:00 PM -->
+      <tr>
+        <td class="time-cell"><div class="time-label">8:00 PM</div></td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">8/20</span>
+            <div class="cb-name">Yoga Flow</div>
+            <div class="cb-meta">60 min · Sara M.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">6/12</span>
+            <div class="cb-name">Body Sculpt</div>
+            <div class="cb-meta">55 min · Maria C.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-cardio" data-cat="cardio">
+            <span class="cb-spots">9/15</span>
+            <div class="cb-name">Cardio Circuit</div>
+            <div class="cb-meta">50 min · Nina P.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-strength" data-cat="strength">
+            <span class="cb-spots">7/12</span>
+            <div class="cb-name">Strength Forge</div>
+            <div class="cb-meta">60 min · Marcus B.</div>
+          </div>
+        </td>
+        <td class="class-cell">
+          <div class="class-block cb-wellness" data-cat="wellness">
+            <span class="cb-spots">11/20</span>
+            <div class="cb-name">Yoga Flow</div>
+            <div class="cb-meta">60 min · Aisha L.</div>
+          </div>
+        </td>
+        <td class="class-cell"></td>
+        <td class="class-cell"></td>
+      </tr>
+
+    </tbody>
+  </table>
+</section>
+
+<!-- LEGEND -->
+<div class="legend reveal">
+  <span class="legend-label">Legend:</span>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div> Strength</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div> Cardio</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#ff6a00"></div> Combat</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#9b59b6"></div> Wellness</div>
+  <div class="legend-item" style="margin-left:12px; color:#555; font-size:0.75rem; font-family:'Barlow Condensed',sans-serif; letter-spacing:2px; text-transform:uppercase;">⬛ Greyed = Class Full</div>
+</div>
+
+<!-- TODAY HIGHLIGHT -->
+<div class="today-strip reveal">
+  <div class="today-inner">
+    <div class="today-left">
+      <div class="tl-tag">📅 Today · Monday Feb 17</div>
+      <h3>Today's Classes</h3>
+      <p>6 classes available — spots filling fast</p>
+    </div>
+    <div class="today-classes">
+      <div class="today-class">
+        <div class="tc-time">5:00 AM</div>
+        <div class="tc-name">Strength Forge</div>
+        <div class="tc-coach">Derek Shaw</div>
+      </div>
+      <div class="today-class">
+        <div class="tc-time">6:00 AM</div>
+        <div class="tc-name">HIIT Ignite</div>
+        <div class="tc-coach">Nina Park</div>
+      </div>
+      <div class="today-class">
+        <div class="tc-time">7:00 AM</div>
+        <div class="tc-name">Yoga Flow</div>
+        <div class="tc-coach">Aisha Laurent</div>
+      </div>
+      <div class="today-class">
+        <div class="tc-time">9:00 AM</div>
+        <div class="tc-name">Boxing Strike</div>
+        <div class="tc-coach">Tony Vasquez</div>
+      </div>
+      <div class="today-class">
+        <div class="tc-time">5:00 PM</div>
+        <div class="tc-name">Strength Forge</div>
+        <div class="tc-coach">Derek Shaw</div>
+      </div>
+      <div class="today-class">
+        <div class="tc-time">6:30 PM</div>
+        <div class="tc-name">Boxing Strike</div>
+        <div class="tc-coach">Tony Vasquez</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INFO CARDS -->
+<div class="info-section">
+  <div class="info-card reveal">
+    <span class="info-icon">🕐</span>
+    <div class="info-title">Gym Hours</div>
+    <p class="info-text">
+      <b>Mon – Fri:</b> Open 24 Hours<br>
+      <b>Saturday:</b> 5:00 AM – 10:00 PM<br>
+      <b>Sunday:</b> 6:00 AM – 8:00 PM<br><br>
+      Staffed hours: 6AM – 10PM daily. Key fob access available for all members outside staffed hours.
+    </p>
+  </div>
+  <div class="info-card reveal">
+    <span class="info-icon">📱</span>
+    <div class="info-title">How to Book</div>
+    <p class="info-text">
+      Book classes up to <b>7 days in advance</b> via the Gym Evolution app or website. Elite and Champion members get <b>priority booking</b> 48 hours before Starter members.<br><br>
+      Cancel at least <b>2 hours before</b> class to avoid a no-show strike.
+    </p>
+  </div>
+  <div class="info-card reveal">
+    <span class="info-icon">⚡</span>
+    <div class="info-title">Drop-Ins Welcome</div>
+    <p class="info-text">
+      Not a member yet? <b>Drop-in passes</b> are available for $25/class. All drop-ins include full facility access for the day.<br><br>
+      First class is always <b>free for new visitors</b> — no signup required, just show up 10 minutes early.
+    </p>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta">
+  <p class="cta-label">Don't Miss Your Spot</p>
+  <h2 class="cta-title">Book Your Class<br>Today</h2>
+  <p class="cta-sub">Popular classes fill up fast. Download the app or sign up to reserve your spot now.</p>
+  <a href="#" class="btn-white">Book a Class Now →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>GYM</span> EVOLUTION</div>
+  <div class="footer-copy">© 2025 Gym Evolution. Premier Training Facility.</div>
+</footer>
+
+<script>
+  // Week navigation
+  let weekOffset = 0;
+  function changeWeek(dir) {
+    weekOffset += dir;
+    const base = new Date('2026-02-17');
+    base.setDate(base.getDate() + weekOffset * 7);
+    const end = new Date(base);
+    end.setDate(end.getDate() + 6);
+    const opts = { month: 'short', day: 'numeric' };
+    document.getElementById('week-display').textContent =
+      base.toLocaleDateString('en-US', opts) + ' – ' + end.toLocaleDateString('en-US', opts) + ', ' + end.getFullYear();
+  }
+
+  // Filter
+  function filterClass(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.class-block').forEach(block => {
+      if (cat === 'all' || block.dataset.cat === cat) {
+        block.style.display = '';
+      } else {
+        block.style.display = 'none';
+      }
+    });
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

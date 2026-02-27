@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gym Evolution</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --red: #e50914;
+      --blue: #0a84ff;
+      --black: #050505;
+      --dark: #0d0d0d;
+      --gray: #1a1a1a;
+      --light: #f0f0f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--light);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    .cursor {
+      width: 14px; height: 14px;
+      background: var(--red);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, background 0.2s;
+    }
+    .cursor-ring {
+      width: 36px; height: 36px;
+      border: 1.5px solid var(--blue);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: all 0.15s ease;
+      opacity: 0.7;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: linear-gradient(to bottom, rgba(5,5,5,0.95), transparent);
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 4px;
+      color: var(--light);
+      text-decoration: none;
+    }
+    .logo span { color: var(--red); }
+    nav ul { list-style: none; display: flex; gap: 36px; }
+    nav ul a {
+      color: var(--light);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      position: relative;
+      transition: color 0.2s;
+    }
+    nav ul a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: var(--red);
+      transition: width 0.3s ease;
+    }
+    nav ul a:hover { color: var(--red); }
+    nav ul a:hover::after { width: 100%; }
+    .nav-cta {
+      background: var(--red);
+      color: var(--light) !important;
+      padding: 10px 24px;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      font-weight: 700 !important;
+      letter-spacing: 2px;
+    }
+    .nav-cta::after { display: none !important; }
+    .nav-cta:hover { background: #ff1a1a; color: #fff !important; }
+
+    /* HERO */
+    .hero {
+      height: 100vh;
+      display: flex; align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        linear-gradient(135deg, rgba(229,9,20,0.12) 0%, transparent 50%),
+        linear-gradient(225deg, rgba(10,132,255,0.08) 0%, transparent 50%),
+        var(--black);
+    }
+    /* Diagonal accent lines */
+    .hero-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        -60deg,
+        transparent,
+        transparent 80px,
+        rgba(255,255,255,0.012) 80px,
+        rgba(255,255,255,0.012) 81px
+      );
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      padding: 0 60px;
+      max-width: 900px;
+    }
+    .hero-tag {
+      font-size: 0.85rem;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 700;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.2s forwards;
+    }
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 12vw, 11rem);
+      line-height: 0.9;
+      letter-spacing: 4px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-title .line-red { color: var(--red); display: block; }
+    .hero-title .line-blue {
+      color: transparent;
+      -webkit-text-stroke: 2px var(--blue);
+      display: block;
+    }
+    .hero-sub {
+      margin-top: 28px;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: rgba(240,240,240,0.65);
+      max-width: 500px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+    .hero-btns {
+      margin-top: 44px;
+      display: flex; gap: 20px; align-items: center;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+    .btn-primary {
+      background: var(--red);
+      color: #fff;
+      padding: 14px 40px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none; cursor: none;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+      transition: background 0.25s, transform 0.2s;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-primary:hover { background: #ff2020; transform: scale(1.04); }
+    .btn-secondary {
+      color: var(--light);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 2px solid var(--blue);
+      padding-bottom: 3px;
+      transition: color 0.2s;
+    }
+    .btn-secondary:hover { color: var(--blue); }
+
+    /* side bar number */
+    .hero-number {
+      position: absolute;
+      right: 60px;
+      bottom: 80px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 12rem;
+      color: rgba(229,9,20,0.06);
+      line-height: 1;
+      user-select: none;
+      letter-spacing: -10px;
+    }
+
+    /* scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px; left: 60px;
+      display: flex; align-items: center; gap: 12px;
+      opacity: 0; animation: fadeUp 1s 1.2s forwards;
+    }
+    .scroll-line {
+      width: 40px; height: 1px;
+      background: var(--blue);
+      position: relative;
+      overflow: hidden;
+    }
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: var(--red);
+      animation: scanLine 1.5s ease infinite;
+    }
+    @keyframes scanLine { to { left: 100%; } }
+    .scroll-text {
+      font-size: 0.75rem;
+      letter-spacing: 4px;
+      color: rgba(240,240,240,0.4);
+      text-transform: uppercase;
+    }
+
+    /* STATS STRIP */
+    .stats-strip {
+      background: var(--gray);
+      border-top: 2px solid var(--red);
+      border-bottom: 2px solid rgba(10,132,255,0.3);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .stat {
+      padding: 40px 30px;
+      text-align: center;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      transition: background 0.3s;
+    }
+    .stat:last-child { border-right: none; }
+    .stat:hover { background: rgba(229,9,20,0.07); }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.5rem;
+      color: var(--red);
+      line-height: 1;
+    }
+    .stat-num span { color: var(--blue); font-size: 2.5rem; }
+    .stat-label {
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(240,240,240,0.5);
+      margin-top: 6px;
+    }
+
+    /* PROGRAMS */
+    .section { padding: 100px 60px; }
+    .section-header { margin-bottom: 60px; }
+    .section-tag {
+      font-size: 0.8rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--blue);
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      letter-spacing: 3px;
+      line-height: 1;
+    }
+    .section-title em { color: var(--red); font-style: normal; }
+
+    .programs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .program-card {
+      background: var(--gray);
+      padding: 44px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s;
+      cursor: none;
+    }
+    .program-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 0;
+      background: var(--red);
+      transition: height 0.4s ease;
+    }
+    .program-card:hover::before { height: 100%; }
+    .program-card:hover { transform: translateY(-4px); }
+    .program-card:nth-child(2)::before { background: var(--blue); }
+    .program-card:nth-child(3)::before { background: var(--red); }
+    .program-card:nth-child(4)::before { background: var(--blue); }
+    .program-card:nth-child(5)::before { background: var(--red); }
+    .program-card:nth-child(6)::before { background: var(--blue); }
+
+    .program-icon {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    .program-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+    .program-desc {
+      color: rgba(240,240,240,0.55);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .program-link {
+      display: inline-block;
+      margin-top: 24px;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      text-decoration: none;
+      font-weight: 700;
+      transition: letter-spacing 0.2s;
+    }
+    .program-link:hover { letter-spacing: 5px; }
+
+    /* TRAINERS */
+    .trainers-section {
+      background: var(--gray);
+    }
+    .trainers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+    .trainer-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+    .trainer-img {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: linear-gradient(160deg, #1a1a2e, #16213e);
+      display: flex; align-items: flex-end;
+      justify-content: center;
+      font-size: 6rem;
+      padding-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .trainer-img::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(229,9,20,0.3) 0%, transparent 50%);
+    }
+    .trainer-info {
+      padding: 24px;
+      border-top: 2px solid var(--red);
+    }
+    .trainer-card:nth-child(2) .trainer-info { border-top-color: var(--blue); }
+    .trainer-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 2px;
+    }
+    .trainer-role {
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--red);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .trainer-card:nth-child(2) .trainer-role { color: var(--blue); }
+
+    /* CTA SECTION */
+    .cta-section {
+      background: var(--red);
+      padding: 80px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: 'EVOLVE';
+      position: absolute;
+      right: -20px; top: 50%;
+      transform: translateY(-50%);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 12rem;
+      color: rgba(0,0,0,0.12);
+      letter-spacing: -10px;
+      pointer-events: none;
+      line-height: 1;
+    }
+    .cta-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      letter-spacing: 3px;
+      line-height: 1.1;
+    }
+    .cta-sub {
+      margin-top: 10px;
+      font-size: 1rem;
+      color: rgba(255,255,255,0.75);
+    }
+    .btn-white {
+      background: #fff;
+      color: var(--red);
+      padding: 16px 48px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      border: none; cursor: none;
+      clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+      transition: background 0.2s, transform 0.2s;
+      text-decoration: none; display: inline-block;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-white:hover { background: var(--black); color: #fff; transform: scale(1.04); }
+
+    /* FOOTER */
+    footer {
+      background: #000;
+      padding: 50px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 4px;
+    }
+    .footer-logo span { color: var(--red); }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a {
+      color: rgba(240,240,240,0.4);
+      text-decoration: none;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--blue); }
+    .footer-copy {
+      font-size: 0.8rem;
+      color: rgba(240,240,240,0.2);
+      letter-spacing: 1px;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* NOISE OVERLAY */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      nav ul { display: none; }
+      .hero-content { padding: 0 24px; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); }
+      .programs-grid, .trainers-grid { grid-template-columns: 1fr; }
+      .section { padding: 70px 24px; }
+      .cta-section { flex-direction: column; padding: 60px 24px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; padding: 40px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>GYM</span> EVOLUTION</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="why-gym-evolution.html">Why Us</a></li>
+    <li><a href="programs.html">Programs</a></li>
+    <li><a href="trainers.html">Trainers</a></li>
+    <li><a href="schedule.html">Schedule</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="about-us.html">About Us</a></li>
+  </ul>
+  <a href="pricing.html" class="btn-join">Join Now</a>
+</nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <p class="hero-tag">⚡ Karachi's Premier Training Facility</p>
+      <h1 class="hero-title">
+        <span class="line-red">Gym</span>
+        <span class="line-blue">Evolution</span>
+      </h1>
+      <p class="hero-sub">Push past your limits. Forge your strength. Transform your body with elite coaching, cutting-edge equipment, and a community built to win.</p>
+      <div class="hero-btns">
+        <a href="#programs" class="btn-primary">Start Training</a>
+        <a href="#trainers" class="btn-secondary">Meet Our Coaches →</a>
+      </div>
+    </div>
+    <div class="hero-number">01</div>
+    <div class="scroll-indicator">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">Scroll Down</span>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-strip">
+    <div class="stat">
+      <div class="stat-num">1200<span>+</span></div>
+      <div class="stat-label">Active Members</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">18<span>+</span></div>
+      <div class="stat-label">Expert Trainers</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">50<span>+</span></div>
+      <div class="stat-label">Programs Offered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">8<span>yrs</span></div>
+      <div class="stat-label">Years of Excellence</div>
+    </div>
+  </div>
+
+  <!-- PROGRAMS -->
+  <section class="section" id="programs">
+    <div class="section-header">
+      <p class="section-tag">// What We Offer</p>
+      <h2 class="section-title">Training <em>Programs</em></h2>
+    </div>
+    <div class="programs-grid">
+      <div class="program-card">
+        <div class="program-icon">🏋️</div>
+        <div class="program-name">Strength & Power</div>
+        <p class="program-desc">Build raw strength with progressive overload, compound movements, and expert programming tailored to your goals.</p>
+        <a href="#" class="program-link">Learn More →</a>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">🥊</div>
+        <div class="program-name">Combat Training</div>
+        <p class="program-desc">Boxing, MMA fundamentals, and kickboxing classes designed to sharpen reflexes and build explosive power.</p>
+        <a href="#" class="program-link">Learn More →</a>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">🔥</div>
+        <div class="program-name">HIIT & Cardio</div>
+        <p class="program-desc">High-intensity interval training that torches fat, boosts endurance, and transforms your cardiovascular system.</p>
+        <a href="#" class="program-link">Learn More →</a>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">💪</div>
+        <div class="program-name">Bodybuilding</div>
+        <p class="program-desc">Sculpt your physique with hypertrophy-focused training, nutrition guidance, and competition prep support.</p>
+        <a href="#" class="program-link">Learn More →</a>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">🧘</div>
+        <div class="program-name">Functional Fitness</div>
+        <p class="program-desc">Real-world movement patterns and mobility work that carry strength beyond the gym into everyday life.</p>
+        <a href="#" class="program-link">Learn More →</a>
+      </div>
+      <div class="program-card">
+        <div class="program-icon">⚡</div>
+        <div class="program-name">CrossFit Style</div>
+        <p class="program-desc">Community-driven, high-energy WODs that test every aspect of your fitness. Scale to your level, compete to grow.</p>
+        <a href="#" class="program-link">Learn More →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAINERS -->
+  <section class="section trainers-section" id="trainers">
+    <div class="section-header">
+      <p class="section-tag">// The Team</p>
+      <h2 class="section-title">Elite <em>Coaches</em></h2>
+    </div>
+    <div class="trainers-grid">
+      <div class="trainer-card">
+        <div class="trainer-img">💪</div>
+        <div class="trainer-info">
+          <div class="trainer-name">Ahmed Raza</div>
+          <div class="trainer-role">Head Coach – Strength & Power</div>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <div class="trainer-img" style="background: linear-gradient(160deg, #1e0a0a, #3d1414);">🥊</div>
+        <div class="trainer-info">
+          <div class="trainer-name">Sara Khan</div>
+          <div class="trainer-role">Combat & Conditioning</div>
+        </div>
+      </div>
+      <div class="trainer-card">
+        <div class="trainer-img" style="background: linear-gradient(160deg, #0a0a1e, #141436);">🔥</div>
+        <div class="trainer-info">
+          <div class="trainer-name">Bilal Mirza</div>
+          <div class="trainer-role">HIIT & Functional Training</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div>
+      <h2 class="cta-title">Ready to Evolve?<br>Start Today.</h2>
+      <p class="cta-sub">First session is on us. No excuses. Just results.</p>
+    </div>
+    <a href="#" class="btn-white">Claim Free Trial</a>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Gym <span>Evolution</span></div>
+    <div class="footer-links">
+      <a href="#">Instagram</a>
+      <a href="#">Facebook</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy</a>
+    </div>
+    <div class="footer-copy">© 2026 Gym Evolution. All rights reserved.</div>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+
+    (function animateRing() {
+      ringX += (mouseX - ringX) * 0.12;
+      ringY += (mouseY - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    // Hover effects on interactive elements
+    document.querySelectorAll('a, button, .program-card, .stat').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1.8)';
+        cursor.style.background = 'var(--blue)';
+        ring.style.width = '60px'; ring.style.height = '60px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        cursor.style.background = 'var(--red)';
+        ring.style.width = '36px'; ring.style.height = '36px';
+      });
+    });
+
+    // Scroll-triggered fade-in
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.program-card, .trainer-card, .stat').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+  
+</body>
+</html>

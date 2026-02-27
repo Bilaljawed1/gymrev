@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About Us – Gym Evolution</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #e81010;
+    --blue: #1488fc;
+    --dark: #0a0a0a;
+    --dark2: #111111;
+    --dark3: #181818;
+    --white: #ffffff;
+    --gray: #888888;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 72px;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--blue); }
+
+  .btn-join {
+    background: var(--red);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 28px;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s;
+  }
+  .btn-join:hover { background: #c20d0d; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 140px 80px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 80% 30%, rgba(232,16,16,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse at 10% 70%, rgba(20,136,252,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* big background text */
+  .hero-bg-text {
+    position: absolute;
+    bottom: -40px;
+    left: -20px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22vw;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.03);
+    text-transform: uppercase;
+    pointer-events: none;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 6px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+  .hero-title .line1 {
+    display: block;
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+  }
+  .hero-title .line2 {
+    display: block;
+    font-size: clamp(5rem, 13vw, 12rem);
+    color: transparent;
+    -webkit-text-stroke: 3px var(--red);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.5s forwards;
+  }
+
+  .hero-sub {
+    max-width: 580px;
+    font-size: 1.1rem;
+    line-height: 1.75;
+    color: #cccccc;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  /* ── ORIGIN STORY ── */
+  .origin {
+    padding: 100px 80px;
+    background: var(--dark2);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .origin::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, var(--red), var(--blue));
+  }
+
+  .origin-left .section-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .origin-left h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 4vw, 4rem);
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 32px;
+  }
+  .origin-left h2 em {
+    font-style: normal;
+    color: var(--blue);
+  }
+
+  .origin-left p {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: #aaa;
+    margin-bottom: 20px;
+  }
+
+  .origin-right {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .origin-card {
+    background: var(--dark3);
+    padding: 32px 28px;
+    border-bottom: 3px solid var(--red);
+  }
+  .origin-card:nth-child(2) { border-bottom-color: var(--blue); margin-top: 32px; }
+  .origin-card:nth-child(3) { border-bottom-color: var(--blue); }
+  .origin-card:nth-child(4) { border-bottom-color: var(--red); margin-top: 32px; }
+
+  .origin-card .oc-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--red);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .origin-card:nth-child(2) .oc-num,
+  .origin-card:nth-child(3) .oc-num { color: var(--blue); }
+
+  .origin-card .oc-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gray);
+  }
+
+  /* ── MISSION / VALUES ── */
+  .mission {
+    padding: 100px 80px;
+    background: var(--dark);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mission::after {
+    content: 'MISSION';
+    position: absolute;
+    right: -60px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.03);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .mission-top {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-bottom: 80px;
+  }
+
+  .mission-statement {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+  .mission-statement em { font-style: normal; color: var(--red); }
+
+  .mission-text {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: #aaa;
+    padding-top: 8px;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .value-card {
+    background: var(--dark3);
+    padding: 40px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+  }
+  .value-card:hover { background: #1c1c1c; }
+  .value-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.35s;
+  }
+  .value-card:hover::before { transform: scaleX(1); }
+
+  .value-icon {
+    font-size: 2.4rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .value-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .value-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    color: #888;
+  }
+
+  /* ── TIMELINE ── */
+  .timeline-section {
+    padding: 100px 80px;
+    background: var(--dark2);
+  }
+
+  .timeline {
+    position: relative;
+    margin-top: 64px;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, var(--red), var(--blue), var(--red));
+  }
+
+  .tl-item {
+    position: relative;
+    padding: 0 0 56px 56px;
+  }
+  .tl-item:last-child { padding-bottom: 0; }
+
+  .tl-dot {
+    position: absolute;
+    left: -9px;
+    top: 6px;
+    width: 20px;
+    height: 20px;
+    background: var(--red);
+    border-radius: 50%;
+    border: 3px solid var(--dark2);
+    z-index: 1;
+  }
+  .tl-item:nth-child(even) .tl-dot { background: var(--blue); }
+
+  .tl-year {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .tl-item:nth-child(even) .tl-year { color: var(--blue); }
+
+  .tl-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .tl-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #888;
+    max-width: 620px;
+  }
+
+  /* ── TEAM ── */
+  .team {
+    padding: 100px 80px;
+    background: var(--dark);
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-top: 64px;
+  }
+
+  .team-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--dark3);
+  }
+
+  .team-avatar {
+    width: 100%;
+    aspect-ratio: 3/4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .team-avatar-bg {
+    position: absolute;
+    inset: 0;
+  }
+  .team-card:nth-child(1) .team-avatar-bg { background: linear-gradient(135deg, #1a0000 0%, #3d0808 50%, #1a0000 100%); }
+  .team-card:nth-child(2) .team-avatar-bg { background: linear-gradient(135deg, #001a2e 0%, #003b6b 50%, #001a2e 100%); }
+  .team-card:nth-child(3) .team-avatar-bg { background: linear-gradient(135deg, #1a0000 0%, #3d0808 50%, #1a0000 100%); }
+  .team-card:nth-child(4) .team-avatar-bg { background: linear-gradient(135deg, #001a2e 0%, #003b6b 50%, #001a2e 100%); }
+
+  .team-initials {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 6rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.12);
+    z-index: 1;
+    position: relative;
+  }
+
+  .team-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(10,10,10,1) 0%, transparent 60%);
+    z-index: 2;
+  }
+
+  .team-role-tag {
+    position: absolute;
+    top: 16px;
+    left: 0;
+    background: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    z-index: 3;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  }
+  .team-card:nth-child(even) .team-role-tag { background: var(--blue); }
+
+  .team-info {
+    padding: 20px 24px 28px;
+  }
+  .team-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.4rem;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .team-title {
+    font-size: 0.8rem;
+    color: var(--gray);
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .team-bio {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: #777;
+  }
+
+  /* ── CTA ── */
+  .cta {
+    padding: 120px 80px;
+    background: var(--red);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 6%, 100% 0%, 100% 94%, 0% 100%);
+    margin: -30px 0;
+  }
+
+  .cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.05) 0px,
+      rgba(0,0,0,0.05) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+  }
+
+  .cta-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 20px;
+  }
+  .cta-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 16px;
+  }
+  .cta-sub {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 48px;
+  }
+  .btn-white {
+    display: inline-block;
+    background: #fff;
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 56px;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: transform 0.2s;
+  }
+  .btn-white:hover { transform: scale(1.04); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #050505;
+    padding: 40px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .footer-logo span { color: var(--red); }
+  .footer-copy { font-size: 0.8rem; color: var(--gray); }
+
+  /* ── SECTION SHARED ── */
+  .section-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .section-title em { font-style: normal; color: var(--blue); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>GYM</span> EVOLUTION</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="why-gym-evolution.html">Why Us</a></li>
+    <li><a href="programs.html">Programs</a></li>
+    <li><a href="trainers.html">Trainers</a></li>
+    <li><a href="schedule.html">Schedule</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="about-us.html">About Us</a></li>
+  </ul>
+  <a href="pricing.html" class="btn-join">Join Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-text">About</div>
+  <p class="hero-eyebrow">Our Story · Our People · Our Purpose</p>
+  <h1 class="hero-title">
+    <span class="line1">About</span>
+    <span class="line2">US</span>
+  </h1>
+  <p class="hero-sub">We didn't build a gym. We built a revolution. Born from a relentless belief that everyone deserves access to elite training, Gym Evolution has grown from a single room to the city's premier fitness destination — and we're just getting started.</p>
+</section>
+
+<!-- ORIGIN STORY -->
+<section class="origin">
+  <div class="origin-left reveal">
+    <p class="section-tag">How It All Began</p>
+    <h2>Born From <em>Passion.</em><br>Built For <em>Champions.</em></h2>
+    <p>In 2015, founder and former professional athlete Derek Shaw walked away from a corporate fitness chain with one conviction: people deserve better. He opened the original Gym Evolution in a 3,000 sq ft warehouse with second-hand equipment and a first-class mindset.</p>
+    <p>Word spread fast. Not because of marketing — but because results spoke louder than any ad campaign. Members were transforming. Coaches were coaching. And a community was forming that had never existed in a gym before.</p>
+    <p>Today, Gym Evolution spans 28,000 sq ft of state-of-the-art training space, serves over 5,000 active members, and employs 30+ elite coaches. The spirit, however, remains exactly the same — push further, evolve daily, never settle.</p>
+  </div>
+  <div class="origin-right reveal">
+    <div class="origin-card">
+      <div class="oc-num">2015</div>
+      <div class="oc-label">Founded</div>
+    </div>
+    <div class="origin-card">
+      <div class="oc-num">28K</div>
+      <div class="oc-label">Square Feet</div>
+    </div>
+    <div class="origin-card">
+      <div class="oc-num">5K+</div>
+      <div class="oc-label">Members Strong</div>
+    </div>
+    <div class="origin-card">
+      <div class="oc-num">30+</div>
+      <div class="oc-label">Elite Coaches</div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION & VALUES -->
+<section class="mission">
+  <div class="mission-top reveal">
+    <div>
+      <p class="section-tag">Our Mission</p>
+      <div class="mission-statement">To unlock the <em>extraordinary</em> in every person who walks through our doors.</div>
+    </div>
+    <div class="mission-text">
+      <p>We believe fitness isn't a privilege — it's a right. Our mission is to create an environment where every person, regardless of fitness level, background, or experience, is empowered to push past their perceived limits and discover what they're truly made of.</p>
+      <br>
+      <p>Every program we design, every coach we hire, and every piece of equipment we install is chosen with one question in mind: does this help our members evolve? If the answer is yes, we do it. If not, we don't.</p>
+    </div>
+  </div>
+
+  <div class="values-grid">
+    <div class="value-card reveal">
+      <span class="value-icon">⚡</span>
+      <div class="value-title">Intensity</div>
+      <p class="value-text">We bring maximum energy to everything we do. Complacency has no home here. We train hard, coach harder, and celebrate every breakthrough.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon">🤝</span>
+      <div class="value-title">Community</div>
+      <p class="value-text">No one evolves alone. We've built a culture of mutual respect, support, and celebration — where your win is everyone's win.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon">🔬</span>
+      <div class="value-title">Science</div>
+      <p class="value-text">Every program is evidence-based. We stay at the cutting edge of sports science, nutrition research, and recovery methodology to give you every advantage.</p>
+    </div>
+    <div class="value-card reveal">
+      <span class="value-icon">🏆</span>
+      <div class="value-title">Excellence</div>
+      <p class="value-text">Good enough never is. We hold ourselves to the highest standard in coaching, facility quality, member experience, and results.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section class="timeline-section">
+  <div class="section-header reveal">
+    <p class="section-tag">Our Journey</p>
+    <h2 class="section-title">A Decade of <em>Evolution</em></h2>
+  </div>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2015 · The Beginning</div>
+      <div class="tl-title">The Warehouse Gym Opens</div>
+      <p class="tl-text">Derek Shaw signs the lease on a 3,000 sq ft warehouse in the industrial district. With 50 charter members and a vision, Gym Evolution opens its doors for the first time.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2017 · Growth</div>
+      <div class="tl-title">First Major Expansion</div>
+      <p class="tl-text">Membership triples in two years. Gym Evolution expands to 10,000 sq ft, adds a dedicated functional training zone, and hires its first team of 8 full-time coaches.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2019 · Recognition</div>
+      <div class="tl-title">Named #1 Gym in the City</div>
+      <p class="tl-text">Two consecutive years of recognition as the city's top-rated training facility. The Evolution method attracts national attention and the waiting list hits 400 people.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2021 · Innovation</div>
+      <div class="tl-title">Evolution App & Digital Launch</div>
+      <p class="tl-text">We launch the Gym Evolution app, bringing personalized programming, nutrition tracking, and live coaching to members' phones — training without boundaries.</p>
+    </div>
+    <div class="tl-item reveal">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2025 · The Now</div>
+      <div class="tl-title">28,000 Sq Ft. 5,000 Members. Still Hungry.</div>
+      <p class="tl-text">Our current flagship facility stands as the premier training destination in the region. We've helped thousands transform their bodies — and our ambition has never been greater.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section class="team">
+  <div class="section-header reveal">
+    <p class="section-tag">The People Behind the Movement</p>
+    <h2 class="section-title">Meet Our <em>Leadership</em></h2>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-avatar">
+        <div class="team-avatar-bg"></div>
+        <div class="team-initials">DS</div>
+        <div class="team-overlay"></div>
+        <div class="team-role-tag">Founder</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Derek Shaw</div>
+        <div class="team-title">Founder & Head of Vision</div>
+        <p class="team-bio">Former pro athlete turned entrepreneur. Derek built Gym Evolution from the ground up with the belief that elite training should be accessible to everyone.</p>
+      </div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar">
+        <div class="team-avatar-bg"></div>
+        <div class="team-initials">MC</div>
+        <div class="team-overlay"></div>
+        <div class="team-role-tag">Head Coach</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Maria Cruz</div>
+        <div class="team-title">Director of Coaching</div>
+        <p class="team-bio">NSCA-certified strength coach with 15 years experience. Maria leads our coaching team and personally oversees every program design methodology.</p>
+      </div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar">
+        <div class="team-avatar-bg"></div>
+        <div class="team-initials">JR</div>
+        <div class="team-overlay"></div>
+        <div class="team-role-tag">Nutrition</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">James Reid</div>
+        <div class="team-title">Head of Nutrition & Recovery</div>
+        <p class="team-bio">Sports nutritionist and recovery specialist. James bridges the gap between training and lifestyle, ensuring our members get results that last.</p>
+      </div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar">
+        <div class="team-avatar-bg"></div>
+        <div class="team-initials">AL</div>
+        <div class="team-overlay"></div>
+        <div class="team-role-tag">Operations</div>
+      </div>
+      <div class="team-info">
+        <div class="team-name">Aisha Laurent</div>
+        <div class="team-title">Member Experience Director</div>
+        <p class="team-bio">Aisha ensures every member feels seen, supported, and challenged. She's the reason Gym Evolution's retention rate is among the highest in the industry.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <p class="cta-label">Become Part of the Story</p>
+  <h2 class="cta-title">Your Chapter<br>Starts Now</h2>
+  <p class="cta-sub">Join thousands of members who chose to evolve. First session is on us.</p>
+  <a href="#" class="btn-white">Claim Your Free Trial</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>GYM</span> EVOLUTION</div>
+  <div class="footer-copy">© 2025 Gym Evolution. Premier Training Facility.</div>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 100);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

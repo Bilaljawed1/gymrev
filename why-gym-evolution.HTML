@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why Gym Evolution</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #e81010;
+    --blue: #1488fc;
+    --dark: #0a0a0a;
+    --dark2: #111111;
+    --dark3: #181818;
+    --white: #ffffff;
+    --gray: #888888;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 48px;
+    height: 72px;
+    background: rgba(10,10,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .nav-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .nav-logo span { color: var(--red); }
+
+  .nav-links {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--blue); }
+
+  .btn-join {
+    background: var(--red);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 12px 28px;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s;
+  }
+  .btn-join:hover { background: #c20d0d; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 120px 80px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(20,136,252,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(232,16,16,0.10) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 6px;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    line-height: 0.9;
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+  .hero-title .line1 {
+    display: block;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+  }
+  .hero-title .line2 {
+    display: block;
+    font-size: clamp(5rem, 13vw, 12rem);
+    color: transparent;
+    -webkit-text-stroke: 3px var(--blue);
+    opacity: 0;
+    animation: fadeUp 0.7s 0.5s forwards;
+  }
+
+  .hero-sub {
+    max-width: 560px;
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #cccccc;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.65s forwards;
+  }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    background: var(--red);
+    padding: 24px 80px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+    clip-path: polygon(0 0, 100% 0, 100% 80%, calc(100% - 40px) 100%, 40px 100%, 0 80%);
+    padding-bottom: 40px;
+  }
+
+  .stat-item {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 3rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.75);
+    margin-top: 4px;
+  }
+  .stat-divider {
+    width: 1px;
+    height: 50px;
+    background: rgba(255,255,255,0.3);
+  }
+
+  /* ── REASONS SECTION ── */
+  .section {
+    padding: 100px 80px;
+  }
+
+  .section-header {
+    margin-bottom: 64px;
+  }
+  .section-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 5px;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .section-title em {
+    font-style: normal;
+    color: var(--blue);
+  }
+
+  /* Cards grid */
+  .reasons-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .reason-card {
+    background: var(--dark3);
+    padding: 48px 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.3s;
+    border-top: 3px solid transparent;
+  }
+  .reason-card:hover {
+    background: #1e1e1e;
+    border-top-color: var(--red);
+  }
+  .reason-card:hover .card-num { color: var(--red); -webkit-text-stroke-color: var(--red); }
+
+  .card-num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 5rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+    line-height: 1;
+    margin-bottom: 24px;
+    transition: -webkit-text-stroke-color 0.3s, color 0.3s;
+  }
+
+  .card-icon {
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    display: block;
+  }
+
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    color: var(--white);
+  }
+
+  .card-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #999;
+  }
+
+  /* ── DIFFERENCE SECTION ── */
+  .diff-section {
+    padding: 100px 80px;
+    background: var(--dark2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .diff-section::after {
+    content: 'EVOLUTION';
+    position: absolute;
+    right: -40px;
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12rem;
+    font-weight: 900;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255,255,255,0.04);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .diff-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .diff-left .big-quote {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .diff-left .big-quote span { color: var(--blue); }
+
+  .diff-left p {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #aaa;
+    margin-bottom: 40px;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 16px 40px;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { background: #c20d0d; transform: translateX(4px); }
+
+  .diff-right {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .compare-row {
+    display: flex;
+    align-items: center;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    gap: 20px;
+  }
+
+  .compare-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .compare-icon.yes { background: rgba(20,136,252,0.15); color: var(--blue); }
+
+  .compare-text {
+    font-size: 0.95rem;
+    color: #ccc;
+    font-weight: 500;
+  }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    padding: 100px 80px;
+    background: var(--dark);
+  }
+
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 64px;
+  }
+
+  .testimonial-card {
+    background: var(--dark3);
+    padding: 40px;
+    position: relative;
+    border-left: 4px solid var(--red);
+  }
+
+  .quote-mark {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 5rem;
+    line-height: 0.8;
+    color: var(--red);
+    opacity: 0.4;
+    margin-bottom: 16px;
+  }
+
+  .testimonial-text {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #bbb;
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+
+  .testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red), var(--blue));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+
+  .author-info .name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .author-info .since {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 2px;
+  }
+
+  /* ── CTA ── */
+  .cta {
+    padding: 100px 80px;
+    background: var(--red);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 6%, 100% 0%, 100% 94%, 0% 100%);
+    margin: -30px 0;
+  }
+
+  .cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(0,0,0,0.05) 0px,
+      rgba(0,0,0,0.05) 1px,
+      transparent 1px,
+      transparent 20px
+    );
+  }
+
+  .cta-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 20px;
+  }
+
+  .cta-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    text-transform: uppercase;
+    line-height: 0.95;
+    margin-bottom: 40px;
+  }
+
+  .btn-white {
+    display: inline-block;
+    background: #fff;
+    color: var(--red);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 18px 56px;
+    clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+    transition: transform 0.2s;
+  }
+  .btn-white:hover { transform: scale(1.04); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #050505;
+    padding: 40px 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .footer-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .footer-logo span { color: var(--red); }
+
+  .footer-copy {
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+
+  /* ── ANIMATION ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo"><span>GYM</span> EVOLUTION</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="why-gym-evolution.html">Why Us</a></li>
+    <li><a href="programs.html">Programs</a></li>
+    <li><a href="trainers.html">Trainers</a></li>
+    <li><a href="schedule.html">Schedule</a></li>
+    <li><a href="pricing.html">Pricing</a></li>
+    <li><a href="about-us.html">About Us</a></li>
+  </ul>
+  <a href="pricing.html" class="btn-join">Join Now</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Premier Training Facility · Est. 2015</p>
+  <h1 class="hero-title">
+    <span class="line1">Why</span>
+    <span class="line2">GYM EVOLUTION</span>
+  </h1>
+  <p class="hero-sub">We're not just another gym. We're a movement. Discover why thousands of members chose Gym Evolution to transform their bodies, sharpen their minds, and redefine what they're capable of.</p>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip reveal">
+  <div class="stat-item">
+    <div class="stat-num">5,000+</div>
+    <div class="stat-label">Active Members</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-num">30+</div>
+    <div class="stat-label">Elite Trainers</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-num">98%</div>
+    <div class="stat-label">Member Retention</div>
+  </div>
+  <div class="stat-divider"></div>
+  <div class="stat-item">
+    <div class="stat-num">10+</div>
+    <div class="stat-label">Years of Excellence</div>
+  </div>
+</div>
+
+<!-- REASONS -->
+<section class="section">
+  <div class="section-header reveal">
+    <p class="section-tag">6 Reasons to Join</p>
+    <h2 class="section-title">What Sets Us <em>Apart</em></h2>
+  </div>
+  <div class="reasons-grid">
+
+    <div class="reason-card reveal">
+      <div class="card-num">01</div>
+      <span class="card-icon">🏋️</span>
+      <h3 class="card-title">World-Class Equipment</h3>
+      <p class="card-text">Over 400 pieces of cutting-edge machinery from the industry's top brands. We invest in the best so you can train at the highest level — always maintained, always available.</p>
+    </div>
+
+    <div class="reason-card reveal">
+      <div class="card-num">02</div>
+      <span class="card-icon">🎯</span>
+      <h3 class="card-title">Personalized Programs</h3>
+      <p class="card-text">No cookie-cutter plans. Every member gets a tailored training roadmap built around their goals, fitness level, and schedule. Your journey is yours alone — we just guide it.</p>
+    </div>
+
+    <div class="reason-card reveal">
+      <div class="card-num">03</div>
+      <span class="card-icon">👑</span>
+      <h3 class="card-title">Elite Coaching Team</h3>
+      <p class="card-text">Our trainers aren't just certified — they're obsessed with results. Former athletes, nutrition experts, and body transformation specialists all under one roof, ready to push you further.</p>
+    </div>
+
+    <div class="reason-card reveal">
+      <div class="card-num">04</div>
+      <span class="card-icon">🔥</span>
+      <h3 class="card-title">Proven Results</h3>
+      <p class="card-text">We track progress, celebrate milestones, and hold you accountable. Our members consistently report hitting goals they thought were impossible — in less time than they expected.</p>
+    </div>
+
+    <div class="reason-card reveal">
+      <div class="card-num">05</div>
+      <span class="card-icon">⚡</span>
+      <h3 class="card-title">Unmatched Community</h3>
+      <p class="card-text">When you join Gym Evolution, you join a tribe. Group classes, challenges, events, and a culture of mutual motivation. The energy on the floor is electric — and contagious.</p>
+    </div>
+
+    <div class="reason-card reveal">
+      <div class="card-num">06</div>
+      <span class="card-icon">🕐</span>
+      <h3 class="card-title">Open 24 / 7 / 365</h3>
+      <p class="card-text">Your schedule shouldn't limit your grind. We're open every hour of every day, so whether you train at 5AM or midnight, the equipment, the showers, and the energy are always ready.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- DIFFERENCE -->
+<section class="diff-section">
+  <div class="diff-layout">
+    <div class="diff-left reveal">
+      <p class="section-tag">The Gym Evolution Difference</p>
+      <div class="big-quote">You Don't Just Get<br>A Gym.<br><span>You Get A System.</span></div>
+      <p>Most gyms sell you a membership and leave you alone. We sell you a transformation. From day one, you'll have a plan, a coach, a community, and the accountability to actually follow through — because showing up is just the beginning.</p>
+      <a href="#" class="btn-primary">Start Your Transformation →</a>
+    </div>
+    <div class="diff-right reveal">
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">Free personalized fitness assessment on day one</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">Dedicated coach assigned to every member</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">Monthly progress tracking and body composition scans</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">50+ weekly group classes included in membership</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">Premium locker rooms, sauna & recovery zone</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">Nutrition guidance and meal planning support</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">Access to Gym Evolution app with workout library</div>
+      </div>
+      <div class="compare-row">
+        <div class="compare-icon yes">✓</div>
+        <div class="compare-text">No hidden fees — cancel anytime, no contracts</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="section-header reveal">
+    <p class="section-tag">Member Stories</p>
+    <h2 class="section-title">Real People. <em>Real Results.</em></h2>
+  </div>
+  <div class="testimonials-grid">
+
+    <div class="testimonial-card reveal">
+      <div class="quote-mark">"</div>
+      <p class="testimonial-text">I'd tried five different gyms before Gym Evolution. None of them came close. The trainers actually care about you hitting your goals, not just swiping your membership card. Lost 40lbs in 6 months.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">MK</div>
+        <div class="author-info">
+          <div class="name">Marcus K.</div>
+          <div class="since">Member since 2022</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal">
+      <div class="quote-mark">"</div>
+      <p class="testimonial-text">The community here is everything. I walk in at 6AM and there are people cheering each other on. I went from someone who hated working out to someone who can't miss a day. This place changed my life.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">SR</div>
+        <div class="author-info">
+          <div class="name">Sofia R.</div>
+          <div class="since">Member since 2021</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal">
+      <div class="quote-mark">"</div>
+      <p class="testimonial-text">As an ex-athlete, I needed a gym that could actually challenge me. The equipment, the programs, the coaches — everything here is pro-level. Best investment I've made in my health, period.</p>
+      <div class="testimonial-author">
+        <div class="author-avatar">DT</div>
+        <div class="author-info">
+          <div class="name">Darius T.</div>
+          <div class="since">Member since 2023</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <p class="cta-label">Ready to Evolve?</p>
+  <h2 class="cta-title">Your Best Self<br>Is Waiting</h2>
+  <a href="#" class="btn-white">Claim Your Free Trial</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo"><span>GYM</span> EVOLUTION</div>
+  <div class="footer-copy">© 2025 Gym Evolution. Premier Training Facility.</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
